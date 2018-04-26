@@ -1,11 +1,13 @@
 package pom.qa.business.repository;
 
+import static javax.transaction.Transactional.TxType.REQUIRED;
 import java.util.Collection;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.transaction.Transactional;
 
 import org.apache.log4j.Logger;
 
@@ -32,7 +34,6 @@ public class MovieDBRepository implements IMovieRepoistory{
 		return util.getJsonForObject(movies);
 	}
 	
-	
 	@Override
 	public String getMovie(Long id) {
 		Movie aMovie = findMovie(id);
@@ -42,10 +43,50 @@ public class MovieDBRepository implements IMovieRepoistory{
 		return "{\"message\": \"movie has been found\"}";
 	}
 	
+	
+	@Override
+	@Transactional(REQUIRED)
+	public String addMovie(String MovieJson) {
+		Movie movieToAdd = util.getObjectForJSON(MovieJson, Movie.class);
+		em.persist(movieToAdd);
+		return "{\"message\": \"movie has been sucessfully added\"}";
+	}
+	
+	
 	private Movie findMovie(Long id) {
 		Movie aMovie = em.find(Movie.class, id);
 		return aMovie;
 	}
+
+	@Transactional(REQUIRED)
+	@Override
+	public String deleteMovie(Long id) {
+		Movie accountToDelete = findMovie(id);
+		if(accountToDelete != null) {
+			em.remove(accountToDelete);
+		}
+		
+		return "{\"message\": \"movie sucessfully deleted\"}";
+	}
+	
+	@Transactional(REQUIRED)
+	@Override
+	public String updateMovie(Long id, String update) {
+		
+		Movie updateMovie = util.getObjectForJSON(update, Movie.class);
+		Movie theMovie = findMovie(id);
+		
+		if(update != null) {
+			theMovie = updateMovie;
+			em.merge(theMovie);
+		}
+		
+		
+		return "{\"message\": \"movie sucessfully updated\"}";
+	}
+
+
+	
 	
 
 }
