@@ -33,7 +33,19 @@ public class MovieDBRepository implements IMovieRepoistory{
 	}
 	
 	
+	@Override
+	public String getMovie(Long id) {
+		Movie aMovie = findMovie(id);
+		if(aMovie != null) {
+			return util.getJsonForObject(aMovie);
+		}
+		return "{\"message\": \"movie has been found\"}";
+	}
 	
+	private Movie findMovie(Long id) {
+		Movie aMovie = em.find(Movie.class, id);
+		return aMovie;
+	}
 	
 
 }
