@@ -4,6 +4,6 @@ public interface IMovieRepoistory {
 	
 	String getAllMovies();
 	
-	
+	String getMovie(Long id);
 
 }

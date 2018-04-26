@@ -4,6 +4,9 @@ public interface IMovieService {
 
 	String GetAllMovies();
 	
+	String getMovie(Long id);
+	
+	
 	
 	
 }
